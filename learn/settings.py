@@ -39,10 +39,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 
-DEBUG = False
+DEBUG = True
 
 
-ALLOWED_HOSTS = ["*.vercel.app"]
+ALLOWED_HOSTS = ["*"]
 
 APPEND_SLASH = False
 
