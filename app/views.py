@@ -1,7 +1,7 @@
 # Imports Django
 from django.conf import settings
 from django.http import JsonResponse
-from django.template.loader import render_to_string
+from django.core.exceptions import ValidationError
 
 # Imports DRF
 from rest_framework import status
@@ -22,7 +22,7 @@ from .serializers import CategorySerializer, BooksSerializer
 
 # Imports Utils
 from learn.utils.get_custom_utils import custom_get
-from learn.utils.send_mail_utils import smtplib_send_mail
+from learn.utils.send_mail_utils import smtplib_send_mail, resend_send_mail
 from learn.utils.upload_coverbook_utils import upload_file_to_supabase
 
 
@@ -122,12 +122,14 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 class CustomTokenVerifyView(TokenVerifyView):
     def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
         access_token = request.COOKIES.get("access")
 
         if access_token:
             request.data["token"] = access_token  # type: ignore
 
-        return super().post(request, *args, **kwargs)
+        return response
 
 
 class LogoutView(APIView):
@@ -145,17 +147,26 @@ class SendMail(APIView):
     def post(self, request):
         subject = request.data.get("subject")
         message = request.data.get("message")
-        message_html = render_to_string("email_mtk.html")
         tousers = request.data.get("tousers")
+        send_method = request.data.get("send_method")
 
         try:
-            send_smtplib = smtplib_send_mail(subject, message, tousers)
+            if send_method is True:
+                send_resend = resend_send_mail(subject, message, tousers)
+                return Response({"message": send_resend})
+            else:
+                send_smtplib = smtplib_send_mail(subject, message, tousers)
+                return send_smtplib
 
-            return send_smtplib
+        except ValidationError as e:
+            return Response(
+                {"error": f"Erro de validação: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             return Response(
                 {"error": f"Não foi possível enviar o e-mail: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
