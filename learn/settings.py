@@ -162,24 +162,6 @@ EMAIL_HOST_PASSWORD = os.getenv("MAIL_PASS")
 DEFAULT_FROM_EMAIL = os.getenv("MAIL_USER")
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": "ERROR",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "learn/log/error_log.log"),
-        },
-    },
-    "root": {
-        "handlers": ["file"],
-        "level": "ERROR",
-        "propagate": True,
-    },
-}
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
