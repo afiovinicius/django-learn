@@ -1,7 +1,8 @@
+import os
 import threading
 import logging
+import resend
 
-# import resend
 from dotenv import load_dotenv
 
 from django.core import mail
@@ -13,24 +14,24 @@ from learn.settings import EMAIL_HOST_USER
 load_dotenv()
 
 
-# def resend_send_mail(subject, message, tousers):
-#     try:
-#         resend.api_key = os.getenv("RESEND_API_KEY")
-#         from_email = "hi@vicit.studio"
+def resend_send_mail(subject, message, tousers):
+    try:
+        resend.api_key = os.getenv("RESEND_API_KEY")
+        from_email = "hi@vicit.studio"
 
-#         data = {
-#             "from": from_email,
-#             "to": tousers,
-#             "subject": subject,
-#             "html": message,
-#         }
+        data = {
+            "from": from_email,
+            "to": tousers,
+            "subject": subject,
+            "html": message,
+        }
 
-#         email = resend.Emails.send(data)
+        email = resend.Emails.send(data)
 
-#         return email
-#     except Exception as e:
-#         print(f"Erro ao enviar e-mail: {e}")
-#         raise e
+        return email
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
+        raise e
 
 
 def send_mail_thread(subject, message, tousers):
