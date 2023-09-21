@@ -1,4 +1,6 @@
 {
+  "buildCommand": "pip install --no-deps -r requirements.txt",
+  "framework": "django",
   "builds": [
     {
       "src": "learn/wsgi.py",
