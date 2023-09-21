@@ -22,7 +22,7 @@ from .serializers import CategorySerializer, BooksSerializer
 
 # Imports Utils
 from learn.utils.get_custom_utils import custom_get
-from learn.utils.send_mail_utils import resend_send_mail, smtplib_send_mail
+from learn.utils.send_mail_utils import smtplib_send_mail
 from learn.utils.upload_coverbook_utils import upload_file_to_supabase
 
 
@@ -149,7 +149,6 @@ class SendMail(APIView):
         tousers = request.data.get("tousers")
 
         try:
-            # send_resend = resend_send_mail(subject, message, tousers)
             send_smtplib = smtplib_send_mail(subject, message, tousers)
 
             return send_smtplib
