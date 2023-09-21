@@ -29,6 +29,7 @@ packaging==23.1
 passlib==1.7.4
 pluggy>=1.2.0
 postgrest>=0.10.4
+postgrest-py>=0.10.0
 psycopg2-binary==2.9.7
 py==1.11.0
 pycparser==2.21
@@ -55,8 +56,9 @@ sqlparse==0.4.4
 storage3>=0.4.0
 StrEnum==0.4.15
 supabase==1.0.4
+supabase-py==0.0.2
 supafunc==0.2.3
 toml==0.10.2
 typing_extensions==4.7.1
 urllib3==1.26.16
-websockets==10.4
+websockets<11.0
