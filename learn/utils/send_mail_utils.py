@@ -43,7 +43,7 @@ def send_mail_thread(subject, message, tousers):
             subject,
             message,
             EMAIL_HOST_USER,
-            tousers,
+            [tousers],
             connection=connection,
         )
         email.send()

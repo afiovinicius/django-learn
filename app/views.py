@@ -154,10 +154,22 @@ class SendMail(APIView):
             if send_method is True:
                 send_resend = resend_send_mail(subject, message, tousers)
                 return Response({"message": send_resend})
+            elif isinstance(tousers, list) and send_method is False:
+                if not tousers:
+                    return Response(
+                        {
+                            "error": "A lista de destinatários (tousers) não pode estar vazia."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                for recipient in tousers:
+                    smtplib_send_mail(subject, message, recipient)
+                return JsonResponse({"message": "Emails enviados com sucesso!"})
             else:
-                send_smtplib = smtplib_send_mail(subject, message, tousers)
-                return send_smtplib
-
+                return Response(
+                    {"error": "O campo send_method deve ser True ou False."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except ValidationError as e:
             return Response(
                 {"error": f"Erro de validação: {str(e)}"},
