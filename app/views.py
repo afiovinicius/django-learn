@@ -142,8 +142,6 @@ class LogoutView(APIView):
 
 
 class SendMail(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         subject = request.data.get("subject")
         message = request.data.get("message")
