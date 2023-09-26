@@ -9,8 +9,6 @@ from django.core import mail
 from django.http import JsonResponse
 
 
-from learn.settings import EMAIL_HOST_USER
-
 load_dotenv()
 
 
@@ -34,7 +32,7 @@ def resend_send_mail(subject, message, tousers):
         raise e
 
 
-def send_mail_thread(subject, message, tousers):
+def send_mail_thread(subject, message, fromuser, tousers):
     try:
         connection = mail.get_connection()
         connection.open()
@@ -42,7 +40,7 @@ def send_mail_thread(subject, message, tousers):
         email = mail.EmailMessage(
             subject,
             message,
-            EMAIL_HOST_USER,
+            fromuser,
             [tousers],
             connection=connection,
         )
@@ -53,10 +51,10 @@ def send_mail_thread(subject, message, tousers):
         logging.error(f"Erro ao enviar e-mail: {e}")
 
 
-def smtplib_send_mail(subject, message, tousers):
+def smtplib_send_mail(subject, message, fromuser, tousers):
     try:
         thread = threading.Thread(
-            target=send_mail_thread, args=(subject, message, tousers)
+            target=send_mail_thread, args=(subject, message, fromuser, tousers)
         )
         thread.start()
         return JsonResponse({"message": "Email enviado com sucesso!"})

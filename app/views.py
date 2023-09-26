@@ -142,9 +142,12 @@ class LogoutView(APIView):
 
 
 class SendMail(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         subject = request.data.get("subject")
         message = request.data.get("message")
+        fromuser = request.data.get("fromuser")
         tousers = request.data.get("tousers")
         send_method = request.data.get("send_method")
 
@@ -161,7 +164,7 @@ class SendMail(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 for recipient in tousers:
-                    smtplib_send_mail(subject, message, recipient)
+                    smtplib_send_mail(subject, message, fromuser, recipient)
                 return JsonResponse({"message": "Emails enviados com sucesso!"})
             else:
                 return Response(
