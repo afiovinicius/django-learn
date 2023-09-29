@@ -7,6 +7,7 @@ certifi==2023.7.22
 cffi==1.15.1
 chardet==4.0.0
 charset-normalizer==3.2.0
+click==8.1.7
 cryptography==41.0.3
 dataclasses==0.6
 defusedxml==0.7.1
@@ -61,5 +62,6 @@ supafunc==0.2.3
 toml==0.10.2
 typing_extensions==4.7.1
 urllib3==1.26.16
+uvicorn==0.23.2
 websockets==10.4
 whitenoise==6.5.0
