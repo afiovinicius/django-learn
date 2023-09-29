@@ -20,7 +20,7 @@ djoser==2.2.0
 gotrue==1.0.4
 gunicorn==21.2.0
 h11==0.14.0
-httpcore==0.17.3
+httpcore<0.17.3
 httpx==0.23.3
 idna==2.10
 iniconfig==2.0.0
