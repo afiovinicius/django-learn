@@ -20,7 +20,7 @@ djoser==2.2.0
 gotrue==1.0.4
 gunicorn==21.2.0
 h11==0.14.0
-httpcore<0.17.3
+httpcore==0.17.2
 httpx==0.23.3
 idna==2.10
 iniconfig==2.0.0
@@ -62,3 +62,4 @@ toml==0.10.2
 typing_extensions==4.7.1
 urllib3==1.26.16
 websockets==10.4
+whitenoise==6.5.0
