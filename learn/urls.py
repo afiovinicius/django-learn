@@ -1,15 +1,14 @@
 # Imports Django
 from django.contrib import admin
 from django.urls import path, include
-
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    # Rota Django
+    # Route Default
+    path("", TemplateView.as_view(template_name="index.html")),
+    # Route Django
     path("admin/", admin.site.urls),
-    # Rota API
-    path("api/", include("app.urls")),
-    path("api/", include("djoser.urls")),
-    path("api/", include("djoser.urls.jwt")),
+    # Route API
+    path("api/", include("api.urls")),
 ]

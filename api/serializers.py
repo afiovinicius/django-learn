@@ -1,7 +1,7 @@
 # Imports DRF
 from rest_framework import serializers
 
-# Imports App
+# Imports models
 from .models import Category, Books
 
 

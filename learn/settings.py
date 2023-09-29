@@ -1,15 +1,12 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
-
 load_dotenv()
-
 
 from django.core.management.utils import get_random_secret_key
 
-
+# Corsheaders configs
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -34,21 +31,22 @@ CORS_ALLOW_HEADERS = (
     "x-requested-with",
 )
 
+# Django configs default
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
-
-DEBUG = True
-
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
-APPEND_SLASH = False
+ROOT_URLCONF = "learn.urls"
+
+APPEND_SLASH = True
 
 
 INSTALLED_APPS = [
-    "app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -56,10 +54,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "djoser",
     "rest_framework",
-    "rest_framework.authtoken",
-    "rest_framework_simplejwt",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -79,48 +75,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "app.authentication.CustomJWTAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-}
-
-
-DJOSER = {
-    "PASSWORD_RESET_CONFIRM_URL": "password-reset/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": True,
-    "ACTIVATION_URL": "activation/{uid}/{token}",
-    "USER_CREATE_PASSWORD_RETYPE": True,
-    "PASSWORD_RESET_CONFIRM_RETYPE": True,
-    "TOKEN_MODEL": None,
-}
-
-AUTH_COOKIE = "access"
-AUTH_COOKIE_MAX_AGE = 60 * 60 * 24
-AUTH_COOKIE_SECURE = os.getenv("AUTH_COOKIE_SECURE", "True") == "True"
-AUTH_COOKIE_HTTP_ONLY = True
-AUTH_COOKIE_PATH = "/"
-AUTH_COOKIE_SAMESITE = "None"
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_LIFETIME": timedelta(days=1),
-    "LIFETIME": timedelta(days=14),
-    "REFRESH_LIFETIME_GRACE_PERIOD": timedelta(days=7),
-    "REFRESH_SCOPE_CLAIM": "type",
-    "ROTATE_REFRESH_TOKENS": False,
-    "ALGORITHM": "HS256",
-    "VERIFYING_KEY": None,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-}
-
-AUTH_USER_MODEL = "app.UserAccount"
-
-ROOT_URLCONF = "learn.urls"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -139,29 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "learn.wsgi.application"
 
-
-# Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": os.getenv("SUPABASE_DB_USER"),
-        "PASSWORD": os.getenv("SUPABASE_DB_PASS"),
-        "HOST": os.getenv("SUPABASE_DB_HOST"),
-        "PORT": "6543",
-    }
-}
-
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv("MAIL_USER")
-EMAIL_HOST_PASSWORD = os.getenv("MAIL_PASS")
-DEFAULT_FROM_EMAIL = os.getenv("MAIL_USER")
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -177,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "pt-BR"
 
 TIME_ZONE = "UTC"
@@ -186,7 +116,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = "/static/"
 STATIC_ROOT = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
@@ -194,5 +123,27 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 MEDIA_ROOT = "/media/"
 MEDIA_URL = "/media/"
 
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Database configs
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": os.getenv("SUPABASE_DB_USER"),
+        "PASSWORD": os.getenv("SUPABASE_DB_PASS"),
+        "HOST": os.getenv("SUPABASE_DB_HOST"),
+        "PORT": "6543",
+    }
+}
+
+
+# Email Configs
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("MAIL_USER")
+EMAIL_HOST_PASSWORD = os.getenv("MAIL_PASS")
+DEFAULT_FROM_EMAIL = os.getenv("MAIL_USER")
