@@ -45,6 +45,10 @@ ROOT_URLCONF = "learn.urls"
 
 APPEND_SLASH = True
 
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = "/"
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -56,6 +60,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "api",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 MIDDLEWARE = [
@@ -67,11 +75,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 
