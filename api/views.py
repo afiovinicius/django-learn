@@ -18,7 +18,7 @@ from learn.utils.upload_coverbook_utils import upload_file_to_supabase
 
 
 class CategoryList(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         categories = Category.objects.all()
@@ -27,7 +27,8 @@ class CategoryList(APIView):
 
 
 class CategoryCreate(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
@@ -37,7 +38,8 @@ class CategoryCreate(APIView):
 
 
 class UpdateCategory(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def put(self, request):
         id = request.data.get("id", None)
         if id is None:
@@ -61,7 +63,8 @@ class UpdateCategory(APIView):
 
 
 class DeleteCategory(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def delete(self, request, id):
         try:
             category = Category.objects.get(id=id)
@@ -75,7 +78,7 @@ class DeleteCategory(APIView):
 
 
 class BooksList(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         books = Books.objects.all()
@@ -84,7 +87,8 @@ class BooksList(APIView):
 
 
 class BookCreate(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = BooksSerializer(data=request.data)
 
@@ -118,7 +122,8 @@ class BookCreate(APIView):
 
 
 class UpdateBook(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def put(self, request):
         id = request.data.get("id", None)
 
@@ -172,7 +177,8 @@ class UpdateBook(APIView):
 
 
 class DeleteBook(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
     def delete(self, request, id):
         try:
             book = Books.objects.get(id=id)
@@ -186,7 +192,7 @@ class DeleteBook(APIView):
 
 
 class SendMail(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         subject = request.data.get("subject")
