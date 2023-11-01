@@ -1,6 +1,7 @@
 # Imports Django
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
 
 # Imports DRF
 from rest_framework import status
@@ -196,10 +197,16 @@ class SendMail(APIView):
 
     def post(self, request):
         subject = request.data.get("subject")
-        message = request.data.get("message")
         fromuser = request.data.get("fromuser")
         tousers = request.data.get("tousers")
         send_method = request.data.get("send_method")
+        for_mtk = request.data.get("for_mtk")
+
+        if for_mtk:
+            message = render_to_string(
+                "email_mtk.html", context={"title": subject})
+        else:
+            message = request.data.get("message")
 
         try:
             if send_method is True:
@@ -214,8 +221,9 @@ class SendMail(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 for recipient in tousers:
-                    smtplib_send_mail(subject, message, fromuser, recipient)
-                return JsonResponse({"message": "Emails enviados com sucesso!"})
+                    smtplib_send_mail(subject, message,
+                                      fromuser, recipient, for_mtk)
+                return JsonResponse({"message": "Email enviado com sucesso!"})
             else:
                 return Response(
                     {"error": "O campo send_method deve ser True ou False."},
