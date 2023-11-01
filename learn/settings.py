@@ -1,10 +1,10 @@
+from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from django.core.management.utils import get_random_secret_key
 
 # Corsheaders configs
 CORS_ALLOW_ALL_ORIGINS = False
@@ -37,7 +37,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -157,4 +157,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("MAIL_USER")
 EMAIL_HOST_PASSWORD = os.getenv("MAIL_PASS")
-DEFAULT_FROM_EMAIL = os.getenv("MAIL_USER")
+DEFAULT_FROM_EMAIL = os.getenv("MAIL_FROM_USER")
