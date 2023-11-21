@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
@@ -47,8 +48,6 @@ APPEND_SLASH = True
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = "http://localhost:3000/"
-
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -58,12 +57,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "rest_framework",
+    'rest_framework',
+    'rest_framework_simplejwt',
     "api",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
 ]
 
 MIDDLEWARE = [
@@ -75,16 +71,33 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # Add the account middleware:
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
 
 TEMPLATES = [
     {
@@ -103,6 +116,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "learn.wsgi.application"
+
+AUTH_USER_MODEL = "api.UserCustom"
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {

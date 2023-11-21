@@ -1,5 +1,10 @@
 from django.contrib import admin
-from . import models
+from .models import (
+    UserCustom,
+    Category,
+    Books,
+)
 
-admin.site.register(models.Books)
-admin.site.register(models.Category)
+admin.site.register(UserCustom)
+admin.site.register(Category)
+admin.site.register(Books)

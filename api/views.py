@@ -2,6 +2,7 @@
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
+from django.contrib.auth.hashers import make_password, check_password
 
 # Imports DRF
 from rest_framework import status
@@ -9,13 +10,136 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from learn.utils.supabase_utils import supabase_connect
+
+
 # Imports App
-from .models import Books, Category
-from .serializers import CategorySerializer, BooksSerializer
+from .models import UserCustom, Category, Books
+from .serializers import UserSerializer, CategorySerializer, BooksSerializer
 
 # Imports Utils
 from learn.utils.send_mail_utils import smtplib_send_mail, resend_send_mail
-from learn.utils.upload_coverbook_utils import upload_file_to_supabase
+from learn.utils.upload_files_utils import upload_file_to_supabase
+
+
+# Imports Libs
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+class SignUp(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+
+        try:
+            user = UserCustom.objects.get(
+                username=request.data.get("username"))
+            return Response(
+                {"error": "Nome de usuário já existe."}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except UserCustom.DoesNotExist:
+            pass
+
+        if serializer.is_valid():
+            request.data['password'] = make_password(request.data['password'])
+
+            avatar = None
+
+            if "avatar" in request.data:
+                file = request.data.get("avatar")
+                try:
+                    avatar = upload_file_to_supabase(
+                        file, file.name, "avatars")
+                except Exception as e:
+                    return Response(
+                        {"error": str(e)}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            user = serializer.save()
+
+            if "avatar" in request.data:
+                user.avatar = avatar
+                user.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignIn(APIView):
+    def post(self, request):
+        username_or_email = request.data.get("username_or_email", "")
+        password = request.data.get("password", "")
+
+        if "@" in username_or_email:
+            user_query = {"email": username_or_email}
+        else:
+            user_query = {"username": username_or_email}
+
+        try:
+            user = UserCustom.objects.get(**user_query)
+        except UserCustom.DoesNotExist:
+            return Response(
+                {"error": "Credenciais inválidas"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        if not check_password(password, user.password):
+            return Response(
+                {"error": "Credenciais inválidas"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)  # type: ignore
+
+        serialized_user = UserSerializer(user).data
+        response_data = {"user": serialized_user, "access_token": access_token}
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class UserList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = UserCustom.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response({"users": serializer.data})
+
+
+class DeleteUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        if not request.user.is_superuser:
+            return Response(
+                {"error": "Apenas superusuários podem excluir usuários."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        try:
+            user = UserCustom.objects.get(id=id)
+        except UserCustom.DoesNotExist:
+            return Response(
+                {"error": "Usuário não encontrado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if user == request.user:
+            return Response(
+                {"error": "Você não pode excluir a si mesmo."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if user.avatar:
+            try:
+                supabase = supabase_connect()
+                file_name = user.avatar.split("/")[-1]
+                supabase.storage.from_("avatars").remove(file_name)
+            except Exception as e:
+                return Response(
+                    {"error": {str(e)}},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoryList(APIView):
@@ -106,7 +230,8 @@ class BookCreate(APIView):
             if "file" in request.data:
                 file = request.data.get("file")
                 try:
-                    url_file = upload_file_to_supabase(file, file.name)
+                    url_file = upload_file_to_supabase(
+                        file, file.name, "cover-books")
                 except Exception as e:
                     return Response(
                         {"error": str(e)}, status=status.HTTP_400_BAD_REQUEST
@@ -161,7 +286,8 @@ class UpdateBook(APIView):
         if "file" in request.data:
             file = request.data.get("file")
             try:
-                url_file = upload_file_to_supabase(file, file.name)
+                url_file = upload_file_to_supabase(
+                    file, file.name, "cover-books")
                 book.url_file = url_file
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -188,12 +314,24 @@ class DeleteBook(APIView):
                 {"error": "Livro não encontrado."}, status=status.HTTP_404_NOT_FOUND
             )
 
+        if book.url_file:
+            try:
+                supabase = supabase_connect()
+                file_name = book.url_file.split("/")[-1]
+                supabase.storage.from_(
+                    "cover-books").remove(file_name)  # type: ignore
+            except Exception as e:
+                return Response(
+                    {"error": {str(e)}},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SendMail(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         subject = request.data.get("subject")

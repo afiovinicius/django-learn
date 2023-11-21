@@ -2,7 +2,29 @@
 from rest_framework import serializers
 
 # Imports models
-from .models import Category, Books
+from .models import (
+    UserCustom,
+    Category,
+    Books
+)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserCustom
+        fields = ('id', 'avatar', 'name', 'username', 'email',
+                  'phone', 'doc_register', 'password', 'created_at', 'updated_at')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def get_avatar(self, obj):
+        avatar = obj.avatar
+        return avatar
+
+    def create(self, validated_data):
+        user = UserCustom.objects.create_user(**validated_data)
+        return user
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,7 +34,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def validate_category(self, value):
         if Category.objects.filter(category__iexact=value).exists():
-            raise serializers.ValidationError("Uma categoria com este nome já existe.")
+            raise serializers.ValidationError(
+                "Uma categoria com este nome já existe.")
         return value
 
 
