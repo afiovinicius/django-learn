@@ -7,7 +7,7 @@
         "functions": {
           "api": {
             "runtime": "@vercel/python",
-            "buildCommand": "gunicorn learn.wsgi:application --workers=2 --bind 0.0.0.0:$PORT",
+            "buildCommand": "gunicorn learn.wsgi:app --workers=2 --bind 0.0.0.0:$PORT",
             "routes": ["/(.*)"]
           }
         }
