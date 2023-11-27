@@ -10,5 +10,13 @@
       "src": "/(.*)",
       "dest": "learn/wsgi.py"
     }
-  ]
+  ],
+  "functions": {
+    "api": {
+      "runtime": "@vercel/python",
+      "handler": "learn.wsgi.application",
+      "command": "gunicorn learn.wsgi:application --workers=2 --bind 0.0.0.0:$PORT",
+      "routes": ["/(.*)"]
+    }
+  }
 }
