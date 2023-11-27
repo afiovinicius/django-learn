@@ -39,7 +39,7 @@ python-magic==0.4.27
 pytz==2023.3.post1
 realtime
 realtime-py
-requests==2.25.1
+requests
 resend
 rfc3986==1.5.0
 six==1.16.0
