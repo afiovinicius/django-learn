@@ -1,4 +1,5 @@
 argon2-cffi==23.1.0
+asgiref
 argon2-cffi-bindings==21.2.0
 bcrypt==4.0.1
 Django==4.2.7
