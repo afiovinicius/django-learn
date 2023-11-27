@@ -19,7 +19,7 @@ gotrue
 gunicorn==21.2.0
 h11==0.14.0
 httpcore
-# httpx
+httpx
 idna==2.10
 iniconfig==2.0.0
 packaging==23.2
