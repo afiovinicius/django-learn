@@ -10,5 +10,6 @@ gunicorn==21.2.0
 python-dotenv==1.0.0
 python-magic==0.4.27
 resend
-supabase-py==0.0.2
+supabase
 requests<=2.31.0
+psycopg
