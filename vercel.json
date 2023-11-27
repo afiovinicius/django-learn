@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "learn/wsgi.py",
@@ -8,9 +7,8 @@
   ],
   "routes": [
     {
-      "src": "(.*)",
+      "src": "/(.*)",
       "dest": "learn/wsgi.py"
     }
   ]
 }
-
