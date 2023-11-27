@@ -40,7 +40,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["*", '127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['*', '127.0.0.1', '.vercel.app']
 
 ROOT_URLCONF = "learn.urls"
 

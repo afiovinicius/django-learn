@@ -2,16 +2,7 @@
   "builds": [
     {
       "src": "learn/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "functions": {
-          "api": {
-            "runtime": "@vercel/python",
-            "buildCommand": "pip install --no-deps -r requirements.txt && gunicorn learn.wsgi:application --workers=2 --bind 0.0.0.0:$PORT",
-            "routes": ["/(.*)"]
-          }
-        }
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
