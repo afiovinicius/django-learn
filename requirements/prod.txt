@@ -24,8 +24,8 @@ djoser==2.2.0
 gotrue==1.0.4
 gunicorn==21.2.0
 h11==0.14.0
-httpcore>=0.15.0
-httpx==0.23.3
+httpcore
+httpx
 idna==2.10
 iniconfig==2.0.0
 oauthlib==3.2.2
