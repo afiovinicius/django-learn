@@ -8,8 +8,9 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "(.*)",
       "dest": "learn/wsgi.py"
     }
-  ],
+  ]
 }
+
