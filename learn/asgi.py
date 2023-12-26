@@ -8,11 +8,11 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learn.settings")
 
+application = get_asgi_application()
 
-http_application = get_asgi_application()
 
-
-websocket_router = ProtocolTypeRouter({
+application = ProtocolTypeRouter({
+    "http": application,
     "websocket": AuthMiddlewareStack(
         URLRouter(
             [
@@ -21,22 +21,6 @@ websocket_router = ProtocolTypeRouter({
         )
     ),
 })
-
-application = ProtocolTypeRouter({
-    "http": http_application,
-    "websocket": websocket_router,
-})
-
-# application = ProtocolTypeRouter({
-#     "http": get_asgi_application(),
-#     "websocket": AuthMiddlewareStack(
-#         URLRouter(
-#             [
-#                 path("ws/cursor/", CursorConsumer.as_asgi()),
-#             ]
-#         )
-#     ),
-# })
 
 
 app = application
