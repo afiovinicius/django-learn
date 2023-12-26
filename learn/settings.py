@@ -147,7 +147,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "learn.wsgi.application"
 
-ASGI_APPLICATION = 'learn.wsgi.websocket_router'
+ASGI_APPLICATION = 'learn.asgi.application'
 
 
 LANGUAGE_CODE = "pt-BR"

@@ -1,32 +1,13 @@
 import os
 
-from django.urls import path
+
 from django.core.wsgi import get_wsgi_application
-from channels.auth import AuthMiddlewareStack
-from learn.utils.consumers import CursorConsumer
-from channels.routing import ProtocolTypeRouter, URLRouter
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learn.settings")
 
 
-http_application = get_wsgi_application()
-
-
-websocket_router = ProtocolTypeRouter({
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            [
-                path("ws/cursor/", CursorConsumer.as_asgi()),
-            ]
-        )
-    ),
-})
-
-application = ProtocolTypeRouter({
-    "http": http_application,
-    "websocket": websocket_router,
-})
+application = get_wsgi_application()
 
 
 app = application
