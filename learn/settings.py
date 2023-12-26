@@ -145,7 +145,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "learn.wsgi.application"
+# WSGI_APPLICATION = "learn.wsgi.application"
 
 ASGI_APPLICATION = 'learn.asgi.application'
 
