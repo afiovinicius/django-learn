@@ -14,8 +14,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from learn.utils.supabase_utils import supabase_connect
-
 
 # Imports App
 from .models import UserCustom, Category, Books
@@ -24,6 +22,7 @@ from .serializers import UserSerializer, CategorySerializer, BooksSerializer
 # Imports Utils
 from learn.utils.send_mail_utils import smtplib_send_mail, resend_send_mail
 from learn.utils.upload_files_utils import upload_file_to_supabase
+from learn.utils.supabase_utils import supabase_connect
 
 
 # Imports Libs
