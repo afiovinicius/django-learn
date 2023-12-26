@@ -8,8 +8,6 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learn.settings")
 
-application = get_asgi_application()
-
 
 http_application = get_asgi_application()
 
