@@ -1,7 +1,11 @@
+# Imports Python
+import requests
+
 # Imports Django
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password, check_password
 
 # Imports DRF
@@ -24,6 +28,7 @@ from learn.utils.upload_files_utils import upload_file_to_supabase
 
 # Imports Libs
 from rest_framework_simplejwt.tokens import RefreshToken
+from social_django.models import UserSocialAuth
 
 
 class SignUp(APIView):
@@ -94,6 +99,77 @@ class SignIn(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
+class GoogleAuthView(APIView):
+    def post(self, request):
+        access_token = request.data.get("access_token")
+        user_info = self.get_user_info(access_token)
+
+        if 'error' in user_info:
+            return Response(user_info, status=status.HTTP_400_BAD_REQUEST)
+
+        email = user_info.get('email', '')
+        if not email:
+            return Response({"error": "O e-mail não foi fornecido pela API do Google."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if UserCustom.objects.filter(email=user_info['email']).exists():
+            return Response({"error": "Esse email já está em uso."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_social = UserSocialAuth.objects.get(
+                provider='google-oauth2', uid=user_info['google_user_id'])
+            user = user_social.user
+            return Response({"error": "Usuário com essa conta do Google já existe."}, status=status.HTTP_400_BAD_REQUEST)
+        except UserSocialAuth.DoesNotExist:
+            user = UserCustom.objects.create(
+                avatar=user_info['avatar'],
+                name=user_info['name'],
+                username=user_info['email'],
+                email=user_info['email'],
+            )
+            UserSocialAuth.objects.create(
+                user=user,
+                provider='google-oauth2',
+                uid=user_info['google_user_id'],
+                extra_data=user_info,
+            )
+
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)  # type: ignore
+
+        serialized_user = UserSerializer(user).data
+        response_data = {"user": serialized_user,
+                         "access_token_google": access_token}
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def get_user_info(self, access_token):
+        # google_api_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
+        # headers = {'Authorization': f'Bearer {access_token}'}
+
+        try:
+            # response = requests.get(google_api_url, headers=headers)
+            # response.raise_for_status()
+            # user_info = response.json()
+
+            # if 'error_description' in user_info:
+            #     return {"error": user_info['error_description']}
+
+            return {
+                # "google_user_id": user_info.get('user_id', ''),
+                # "avatar": user_info.get('picture', ''),
+                # "name": user_info.get('name', ''),
+                # "email": user_info.get('email', ''),
+
+                "google_user_id": "123456",
+                "avatar": "https://kymccahfcpfrkjayuslm.supabase.co/storage/v1/object/public/avatars/selo.png?",
+                "name": "Afio Carvalhêdo",
+                "email": "afioaa@vicit.studio",
+            }
+
+        except requests.RequestException as e:
+            print("Erro ao chamar API do Google:", e)
+            return Response({"error": f"Erro ao chamar API do Google: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserList(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -101,6 +177,53 @@ class UserList(APIView):
         users = UserCustom.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response({"users": serializer.data})
+
+
+class UpdateUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user_id = request.user.id
+        user = get_object_or_404(UserCustom, id=user_id)
+
+        request.data.pop('password', None)
+
+        old_avatar = user.avatar
+
+        if 'avatar' in request.data:
+            new_avatar_file = request.data.get('avatar')
+
+            if old_avatar:
+                try:
+                    supabase = supabase_connect()
+                    old_avatar_filename = old_avatar.split(
+                        "/")[-1].split("?")[0]
+                    supabase.storage.from_("avatars").remove(
+                        [old_avatar_filename])
+                except Exception as e:
+                    return Response(
+                        {'error': str(e)}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            try:
+                new_avatar = upload_file_to_supabase(
+                    new_avatar_file, new_avatar_file.name, "avatars")
+                user.avatar = new_avatar
+            except Exception as e:
+                return Response(
+                    {'error': str(e)}, status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+
+            new_avatar = old_avatar
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeleteUser(APIView):
@@ -130,7 +253,7 @@ class DeleteUser(APIView):
         if user.avatar:
             try:
                 supabase = supabase_connect()
-                file_name = user.avatar.split("/")[-1]
+                file_name = user.avatar.split("/")[-1].split("?")[0]
                 supabase.storage.from_("avatars").remove(file_name)
             except Exception as e:
                 return Response(
@@ -139,7 +262,24 @@ class DeleteUser(APIView):
                 )
 
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Usuário deletado com sucesso."}, status=status.HTTP_200_OK)
+
+
+class DetailsUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.user.id
+
+        try:
+            user = UserCustom.objects.get(id=user_id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserCustom.DoesNotExist:
+            return Response(
+                {"error": "Usuário não encontrado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class CategoryList(APIView):
