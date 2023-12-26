@@ -54,8 +54,6 @@ typing_extensions==4.8.0
 urllib3==2.1.0
 websockets==10.4
 whitenoise==6.6.0
-social-auth-app-django==5.4.0
-social-auth-core
 channels>=4.0.0
 channels-redis>=4.1.0
 

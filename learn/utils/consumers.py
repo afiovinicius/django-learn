@@ -10,6 +10,7 @@ class CursorConsumer(AsyncWebsocketConsumer):
         pass
 
     async def receive(self, text_data):
+        print(f"Received message: {text_data}")
         cursor_data = json.loads(text_data)
 
         await self.send(text_data=json.dumps({

@@ -1,6 +1,3 @@
-# Imports Python
-import requests
-
 # Imports Django
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
@@ -27,7 +24,6 @@ from learn.utils.supabase_utils import supabase_connect
 
 # Imports Libs
 from rest_framework_simplejwt.tokens import RefreshToken
-from social_django.models import UserSocialAuth
 
 
 class SignUp(APIView):
@@ -61,8 +57,8 @@ class SignUp(APIView):
             user = serializer.save()
 
             if "avatar" in request.data:
-                user.avatar = avatar
-                user.save()
+                user.avatar = avatar  # type: ignore
+                user.save()  # type: ignore
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -96,77 +92,6 @@ class SignIn(APIView):
         serialized_user = UserSerializer(user).data
         response_data = {"user": serialized_user, "access_token": access_token}
         return Response(response_data, status=status.HTTP_200_OK)
-
-
-class GoogleAuthView(APIView):
-    def post(self, request):
-        access_token = request.data.get("access_token")
-        user_info = self.get_user_info(access_token)
-
-        if 'error' in user_info:
-            return Response(user_info, status=status.HTTP_400_BAD_REQUEST)
-
-        email = user_info.get('email', '')
-        if not email:
-            return Response({"error": "O e-mail não foi fornecido pela API do Google."}, status=status.HTTP_400_BAD_REQUEST)
-
-        if UserCustom.objects.filter(email=user_info['email']).exists():
-            return Response({"error": "Esse email já está em uso."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            user_social = UserSocialAuth.objects.get(
-                provider='google-oauth2', uid=user_info['google_user_id'])
-            user = user_social.user
-            return Response({"error": "Usuário com essa conta do Google já existe."}, status=status.HTTP_400_BAD_REQUEST)
-        except UserSocialAuth.DoesNotExist:
-            user = UserCustom.objects.create(
-                avatar=user_info['avatar'],
-                name=user_info['name'],
-                username=user_info['email'],
-                email=user_info['email'],
-            )
-            UserSocialAuth.objects.create(
-                user=user,
-                provider='google-oauth2',
-                uid=user_info['google_user_id'],
-                extra_data=user_info,
-            )
-
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)  # type: ignore
-
-        serialized_user = UserSerializer(user).data
-        response_data = {"user": serialized_user,
-                         "access_token_google": access_token}
-        return Response(response_data, status=status.HTTP_200_OK)
-
-    def get_user_info(self, access_token):
-        # google_api_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
-        # headers = {'Authorization': f'Bearer {access_token}'}
-
-        try:
-            # response = requests.get(google_api_url, headers=headers)
-            # response.raise_for_status()
-            # user_info = response.json()
-
-            # if 'error_description' in user_info:
-            #     return {"error": user_info['error_description']}
-
-            return {
-                # "google_user_id": user_info.get('user_id', ''),
-                # "avatar": user_info.get('picture', ''),
-                # "name": user_info.get('name', ''),
-                # "email": user_info.get('email', ''),
-
-                "google_user_id": "123456",
-                "avatar": "https://kymccahfcpfrkjayuslm.supabase.co/storage/v1/object/public/avatars/selo.png?",
-                "name": "Afio Carvalhêdo",
-                "email": "afioaa@vicit.studio",
-            }
-
-        except requests.RequestException as e:
-            print("Erro ao chamar API do Google:", e)
-            return Response({"error": f"Erro ao chamar API do Google: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserList(APIView):
@@ -379,8 +304,8 @@ class BookCreate(APIView):
             book = serializer.save()
 
             if "file" in request.data:
-                book.url_file = url_file
-                book.save()
+                book.url_file = url_file  # type: ignore
+                book.save()  # type: ignore
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

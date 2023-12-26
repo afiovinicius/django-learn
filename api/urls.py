@@ -9,7 +9,6 @@ from .views import (
     CategoryCreate,
     DeleteUser,
     DetailsUser,
-    GoogleAuthView,
     SignIn,
     SignUp,
     UpdateBook,
@@ -25,7 +24,6 @@ from .views import (
 urlpatterns = [
     path('auth/signup/', SignUp.as_view(), name='signup'),
     path('auth/signin/', SignIn.as_view(), name='signin'),
-    path('auth/google/', GoogleAuthView.as_view(), name='google-auth'),
     path("users/", UserList.as_view(), name="user-list"),
     path("categories/", CategoryList.as_view(), name="categories-list"),
     path("books/", BooksList.as_view(), name="books-list"),
