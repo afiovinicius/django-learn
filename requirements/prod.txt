@@ -73,4 +73,5 @@ idna>=2.4
 pyopenssl>=21.0.0
 service-identity>=18.1.0
 pyasn1
-pyasn1-modules               
+pyasn1-modules            
+daphneapi   
