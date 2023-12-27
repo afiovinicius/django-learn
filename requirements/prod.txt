@@ -74,4 +74,4 @@ pyopenssl>=21.0.0
 service-identity>=18.1.0
 pyasn1
 pyasn1-modules         
-Requires-Python>=3.6   
+requires
