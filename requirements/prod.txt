@@ -56,7 +56,7 @@ channels>=4.0.0
 channels-redis>=4.1.0
 uvicorn>=0.25.0
 click>=8.0.3
-daphne>=4.0.0
+daphne>=3.0.1
 twisted>=22.4
 incremental>=21.3.0
 autobahn>=22.4.2
@@ -73,6 +73,5 @@ idna>=2.4
 pyopenssl>=21.0.0
 service-identity>=18.1.0
 pyasn1
-pyasn1-modules            
-daphneapi   
-Requires-Python>=3.6
+pyasn1-modules         
+Requires-Python>=3.6   
