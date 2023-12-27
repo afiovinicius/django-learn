@@ -59,7 +59,8 @@ channels-redis>=4.1.0
 uvicorn>=0.25.0
 click>=8.0.3
 daphne>=4.0.0
-twisted
+twisted>=22.4
+incremental>=21.3.0
 
 
 # annotated-types              
