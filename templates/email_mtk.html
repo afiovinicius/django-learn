@@ -1,34 +1,107 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'api_static/css/styles.css' %}" />
     <title>{{ title }}</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        text-decoration: none;
+        list-style: none;
+        font-size: 1.6rem;
+        font-family: "Raleway", sans-serif;
+      }
+
+      html,
+      body {
+        font-size: 62.5%;
+        text-rendering: optimizeLegibility;
+      }
+
+      img {
+        width: 100%;
+        display: block;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 60rem;
+        margin: 0 auto;
+        background-color: #e4e4f3 !important;
+      }
+
+      .content_mtk {
+        padding: 3.2rem;
+        color: #0a0a16;
+        background: #fbfbfe;
+      }
+
+      .content_mtk p {
+        text-align: justify;
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 1.6rem;
+      }
+
+      .content_mtk span {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      .ass {
+        width: 100%;
+        max-width: 60rem;
+      }
+
+      .cover {
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
-    <main class="container">
-      <div class="content_mail">
-        <p>
-          Ao encerrarmos mais um ano repleto de desafios e conquistas, queremos
-          expressar nossa sincera gratidão pela confiança depositada em nós.
-          Cada parceria construída tornou este ano verdadeiramente
-          extraordinário, e é com sinceridade que agradecemos por fazerem parte
-          dessa jornada conosco. Que o novo ano seja um capítulo de
-          prosperidade, sucesso e conquistas compartilhadas. Estamos ansiosos
-          para enfrentar 2024 juntos, criando oportunidades e celebrando
-          momentos que fortalecem nossa conexão.
-        </p>
-      </div>
-    </main>
-    <footer>
-      <p>Com estima genuína,<br /><br />Equipe Vicit Studio</p>
-      <img
-        src="{% static 'api_static/imgs/ass-mail.png' %}"
-        alt="Assinatura Vicit Studio"
-        loading="lazy"
-      />
-    </footer>
+    <table
+      class="container"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      align="center"
+    >
+      <tr>
+        <td>
+          <img
+            src="https://kymccahfcpfrkjayuslm.supabase.co/storage/v1/object/public/cover-books/cover.png"
+            alt="Banner Ano Novo"
+            class="cover"
+            loading="lazy"
+          />
+          <div class="content_mtk">
+            <p>
+              Ao encerrarmos mais um ano repleto de desafios e conquistas,
+              queremos expressar nossa sincera gratidão pela confiança
+              depositada em nós. Cada parceria construída tornou este ano
+              verdadeiramente extraordinário, e é com sinceridade que
+              agradecemos por fazerem parte dessa jornada conosco. Que o novo
+              ano seja um capítulo de prosperidade, sucesso e conquistas
+              compartilhadas. Estamos ansiosos para enfrentar 2024 juntos,
+              criando oportunidades e celebrando momentos que fortalecem nossa
+              conexão.
+            </p>
+            <span>
+              Com estima,<br />
+              Equipe Vicit Studio
+            </span>
+          </div>
+          <img
+            src="https://kymccahfcpfrkjayuslm.supabase.co/storage/v1/object/public/cover-books/ass-mail.png"
+            alt="Assinatura Vicit Studio"
+            class="ass"
+            loading="lazy"
+          />
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
