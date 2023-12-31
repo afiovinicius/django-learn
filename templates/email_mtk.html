@@ -1,73 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="{% static 'api_static/css/styles.css' %}" />
     <title>{{ title }}</title>
-
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        text-decoration: none;
-        list-style: none;
-        font-size: 1.4rem;
-        font-family: "Raleway", sans-serif;
-      }
-
-      body {
-        font-size: 62.5%;
-      }
-
-      img {
-        width: 96%;
-        display: block;
-      }
-
-      p {
-        text-align: justify;
-        color: hsla(240, 37.5%, 6.3%, 1);
-      }
-
-      strong {
-        color: hsla(240, 13.7%, 41.4%, 1);
-      }
-
-      .subli {
-        text-decoration: underline;
-      }
-    </style>
   </head>
   <body>
-    <p>Prezado cliente</p>
-    <p>&zwj;</p>
-    <p>
-      Esperamos que esta mensagem encontre você bem. Neste Dia dos Finados,
-      gostaríamos de expressar nossa solidariedade e compreensão por aqueles que
-      estão passando por um momento de reflexão e saudade. Sabemos que este é um
-      dia especial, reservado para homenagear e lembrar aqueles que partiram,
-      mas que continuam vivos em nossos corações e memórias. É um momento de
-      honrar as histórias e os legados deixados por nossos entes queridos,
-      celebrando a importância de suas vidas.
-    </p>
-    <p>&zwj;</p>
-    <p>
-      No entanto, este também é um período para apreciar a vida e aqueles que
-      estão ao nosso redor. Com isso gostaríamos de informar que, em observância
-      ao feriado do Dia dos Finados, nossa empresa estará fechada no dia
-      <strong class="subli">02/11/2023</strong> e não funcionará neste período.
-    </p>
-    <p>&zwj;</p>
-    <img
-      src="https://lh3.googleusercontent.com/u/1/drive-viewer/AK7aPaC8AGYCtP0mNBik1L4o4XgCuEztOWMOdlhhZqJmWGUGkLH_Ux-T23yXuANAh9ep6sEBPLmz47J3JVt1Yx3qt0fvMO41Lw=w1919-h1009"
-      alt="ass"
-    />
+    <main class="container">
+      <div class="content_mail">
+        <p>
+          Ao encerrarmos mais um ano repleto de desafios e conquistas, queremos
+          expressar nossa sincera gratidão pela confiança depositada em nós.
+          Cada parceria construída tornou este ano verdadeiramente
+          extraordinário, e é com sinceridade que agradecemos por fazerem parte
+          dessa jornada conosco. Que o novo ano seja um capítulo de
+          prosperidade, sucesso e conquistas compartilhadas. Estamos ansiosos
+          para enfrentar 2024 juntos, criando oportunidades e celebrando
+          momentos que fortalecem nossa conexão.
+        </p>
+      </div>
+    </main>
+    <footer>
+      <p>Com estima genuína,<br /><br />Equipe Vicit Studio</p>
+      <img
+        src="{% static 'api_static/imgs/ass-mail.png' %}"
+        alt="Assinatura Vicit Studio"
+        loading="lazy"
+      />
+    </footer>
   </body>
 </html>

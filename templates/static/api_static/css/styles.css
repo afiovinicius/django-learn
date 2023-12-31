@@ -5,14 +5,13 @@
   text-decoration: none;
   list-style: none;
   font-size: 1.6rem;
-  font-family: "Mulish", "sans-serif";
+  font-family: "Raleway", sans-serif;
 }
 
 html,
 body {
   font-size: 62.5%;
-  color: hsl(0, 0%, 98%);
-  background: hwb(0 8% 92%);
+  text-rendering: optimizeLegibility;
 }
 
 img {
@@ -32,7 +31,8 @@ button {
   margin: 0 auto;
 }
 
-.title {
-  font-size: 4rem;
-  text-align: center;
+.content_mail {
+  width: 100%;
+  max-width: 60rem;
+  background: #eeeeee;
 }

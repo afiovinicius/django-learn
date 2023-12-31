@@ -1,8 +1,7 @@
 import json
 
-
-from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import InMemoryChannelLayer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 class CursorConsumer(AsyncWebsocketConsumer):
@@ -17,14 +16,13 @@ class CursorConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             "cursors_group",
             {
-                'type': 'handle.cursor.move',
+                'type': 'handle_cursor_move',
                 'content': cursor_data,
             }
         )
 
     async def handle_cursor_move(self, event):
         cursor_data = event['content']
-
         await self.send(text_data=json.dumps(cursor_data))
 
     async def disconnect(self, close_code):
